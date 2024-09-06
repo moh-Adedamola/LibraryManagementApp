@@ -1,7 +1,9 @@
 package com.librarymanagementsystem.controller;
 
+import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
 import com.librarymanagementsystem.dtos.responses.ApiResponse;
+import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
 import com.librarymanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,16 @@ public class UserController {
         } catch (Exception exception) {
             return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), HttpStatus.BAD_REQUEST);
 
+        }
+    }
+
+    @PostMapping("/loginUser")
+    public ResponseEntity<?> loginUser(@RequestBody LoginUserRequest loginUserRequest) {
+        try{
+            LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+            return new ResponseEntity<>(new ApiResponse(true,loginUserResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

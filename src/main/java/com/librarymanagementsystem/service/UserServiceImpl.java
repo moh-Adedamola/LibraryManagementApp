@@ -2,11 +2,11 @@ package com.librarymanagementsystem.service;
 
 import com.librarymanagementsystem.data.model.User;
 import com.librarymanagementsystem.data.repositories.UserRepository;
+import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
+import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
-import com.librarymanagementsystem.exception.InvalidEmailException;
-import com.librarymanagementsystem.exception.InvalidRegisterRequestException;
-import com.librarymanagementsystem.exception.UserAlreadyExistException;
+import com.librarymanagementsystem.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,26 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Override
+    public LoginUserResponse loginUser(LoginUserRequest loginUserRequest) {
+        validateEmail(loginUserRequest.getEmail());
+        String email = loginUserRequest.getEmail();
+        String password = loginUserRequest.getPassword();
+
+        for (User user : userRepository.findAll()) {
+            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
+                user.setLogin(true);
+                userRepository.save(user);
+                LoginUserResponse loginUserResponse = new LoginUserResponse();
+                loginUserResponse.setMessage("Login Successful");
+                return loginUserResponse;
+            } else {
+                throw new UsernameOrPasswordException("Invalid username or password");
+            }
+        }
+        throw new UserNotFoundException("User does not exist");
+    }
 
     @Override
     public RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest) {
@@ -42,14 +62,14 @@ public class UserServiceImpl implements UserService {
 
 
     private void validateEmail(String email) {
-        for (User user : userRepository.findAll()) {
-            if (user.getEmail().equalsIgnoreCase(email)) {
-                throw new UserAlreadyExistException("User with same email already exist");
-            }
+//        for (User user : userRepository.findAll()) {
+//            if (user.getEmail().equalsIgnoreCase(email)) {
+//                throw new UserAlreadyExistException("User with same email already exist");
+//            }
             if (!email.contains("@") || !email.endsWith(".com")){
                 throw new InvalidEmailException("invalid email format");
 
             }
-        }
+
     }
 }
