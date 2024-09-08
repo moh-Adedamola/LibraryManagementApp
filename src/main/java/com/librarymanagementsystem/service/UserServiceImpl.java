@@ -18,19 +18,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginUserResponse loginUser(LoginUserRequest loginUserRequest) {
-        validateEmail(loginUserRequest.getEmail());
-        String email = loginUserRequest.getEmail();
+        String email = loginUserRequest.getEmail().toLowerCase();
         String password = loginUserRequest.getPassword();
 
         for (User user : userRepository.findAll()) {
-            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
-                user.setLogin(true);
-                userRepository.save(user);
-                LoginUserResponse loginUserResponse = new LoginUserResponse();
-                loginUserResponse.setMessage("Login Successful");
-                return loginUserResponse;
-            } else {
-                throw new UsernameOrPasswordException("Invalid username or password");
+            if (user.getEmail().equals(email)) {
+                if (user.getPassword().equals(password)) {
+                    user.setLogin(true);
+                    userRepository.save(user);
+                    LoginUserResponse loginResponse = new LoginUserResponse();
+                    loginResponse.setMessage("Login Successful");
+                    return loginResponse;
+                } else {
+                    throw new UsernameOrPasswordException("Invalid username or password");
+                }
             }
         }
         throw new UserNotFoundException("User does not exist");
@@ -62,14 +63,15 @@ public class UserServiceImpl implements UserService {
 
 
     private void validateEmail(String email) {
-//        for (User user : userRepository.findAll()) {
-//            if (user.getEmail().equalsIgnoreCase(email)) {
-//                throw new UserAlreadyExistException("User with same email already exist");
-//            }
-            if (!email.contains("@") || !email.endsWith(".com")){
+        for (User user : userRepository.findAll()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                throw new UserAlreadyExistException("User with same email already exist");
+            }
+            if (!email.contains("@") || !email.endsWith(".com")) {
                 throw new InvalidEmailException("invalid email format");
 
             }
+        }
 
     }
 }
