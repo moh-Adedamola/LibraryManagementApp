@@ -2,12 +2,18 @@ package com.librarymanagementsystem.service;
 
 import com.librarymanagementsystem.data.model.Admin;
 
+import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.repositories.AdminRepository;
+import com.librarymanagementsystem.data.repositories.BookRepository;
+import com.librarymanagementsystem.dtos.request.AddBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
 import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
+import com.librarymanagementsystem.dtos.request.UpdateBookRequest;
+import com.librarymanagementsystem.dtos.responses.AddBookResponse;
 import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
 
 import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
+import com.librarymanagementsystem.dtos.responses.UpdateBookResponse;
 import com.librarymanagementsystem.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +22,10 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
 
     @Override
     public RegisterAdminResponse registerAdmin(RegisterAdminRequest registerAdminRequest) {
@@ -52,6 +62,55 @@ public class AdminServiceImpl implements AdminService {
             }
         }
         throw new UserNotFoundException("User does not exist");
+    }
+
+    @Override
+    public AddBookResponse addBook(AddBookRequest addBookRequest) {
+        validateBookRequest(addBookRequest.getTitle(), addBookRequest.getAuthor());
+        Book newBook = new Book();
+        newBook.setTitle(addBookRequest.getTitle());
+        newBook.setAuthor(addBookRequest.getAuthor());
+        newBook.setGenre(addBookRequest.getGenre());
+        newBook.setDescription(addBookRequest.getDescription());
+        bookRepository.save(newBook);
+        AddBookResponse addBookResponse = new AddBookResponse();
+        addBookResponse.setMessage("Book successfully added!");
+        return addBookResponse;
+
+
+    }
+
+
+
+//    @Override
+//    public UpdateBookResponse updateBook(UpdateBookRequest updateBookRequest) {
+//        validateBookRequest(updateBookRequest.getTitle(), updateBookRequest.getAuthor());
+//        Book bookToUpdate = bookRepository.findByTitleAndAuthor(updateBookRequest.getTitle(), updateBookRequest.getAuthor());
+//
+//        if (bookToUpdate == null) {
+//            throw new BookNotFoundException("Book not found");
+//        }
+//
+//        bookToUpdate.setGenre(updateBookRequest.getGenre());
+//        bookToUpdate.setGenre(updateBookRequest.getGenre());
+//        bookToUpdate.setDescription(updateBookRequest.getDescription());
+//
+//        bookRepository.save(bookToUpdate);
+//
+//        UpdateBookResponse updateBookResponse = new UpdateBookResponse();
+//        updateBookResponse.setMessage("Book successfully updated!");
+//
+//        return updateBookResponse;
+//
+//    }
+
+    private void validateBookRequest(String title,  String author) {
+            for (Book book : bookRepository.findAll()) {
+                if (book.getTitle().equals(title) && book.getAuthor().equals(author)){
+                    throw new BookWithSameTitleAndAuthorException("Book with same title and author already exists");
+                }
+
+            }
     }
 
     private void validateAdminEmail(String email) {

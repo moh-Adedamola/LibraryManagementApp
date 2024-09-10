@@ -1,7 +1,9 @@
 package com.librarymanagementsystem.controller;
 
+import com.librarymanagementsystem.dtos.request.AddBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
 import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
+import com.librarymanagementsystem.dtos.responses.AddBookResponse;
 import com.librarymanagementsystem.dtos.responses.ApiResponse;
 import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
@@ -40,6 +42,16 @@ public class AdminController {
         try {
             LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
             return new ResponseEntity<>(new ApiResponse(true, loginAdminResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addBook")
+    public ResponseEntity<?> addBook(@RequestBody AddBookRequest addBookRequest) {
+        try {
+            AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+            return new ResponseEntity<>(new ApiResponse(true, addBookResponse), HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
         }

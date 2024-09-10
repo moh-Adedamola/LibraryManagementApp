@@ -1,14 +1,9 @@
 package com.librarymanagementsystem.service;
 
+import com.librarymanagementsystem.data.model.Genre;
 import com.librarymanagementsystem.data.repositories.AdminRepository;
-import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
-import com.librarymanagementsystem.dtos.request.LoginUserRequest;
-import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
-import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
-import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
-import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
+import com.librarymanagementsystem.dtos.request.*;
+import com.librarymanagementsystem.dtos.responses.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +32,7 @@ public class AdminServiceTest {
         RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
         registerAdminRequest.setFirstName("ademola");
         registerAdminRequest.setLastName("fakayode");
-        registerAdminRequest.setUserName("ademola");
+        registerAdminRequest.setUsername("ademola");
         registerAdminRequest.setEmail("ademola@gmail.com");
         registerAdminRequest.setPassword("1234");
         RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
@@ -51,7 +46,7 @@ public class AdminServiceTest {
         RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
         registerAdminRequest.setFirstName("yinka");
         registerAdminRequest.setLastName("obanla");
-        registerAdminRequest.setUserName("obanla");
+        registerAdminRequest.setUsername("obanla");
         registerAdminRequest.setEmail("obanla@gmail.com");
         registerAdminRequest.setPassword("1234");
         RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
@@ -68,5 +63,37 @@ public class AdminServiceTest {
 
 
     }
+
+    @Test
+    public void testThatAdminCanAddBook(){
+        RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+        registerAdminRequest.setFirstName("yinka");
+        registerAdminRequest.setLastName("obanla");
+        registerAdminRequest.setUsername("obanla");
+        registerAdminRequest.setEmail("obanla@gmail.com");
+        registerAdminRequest.setPassword("1234");
+        RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
+
+
+        LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+        loginAdminRequest.setUsername("obanla");
+        loginAdminRequest.setPassword("1234");
+        LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+        assertNotNull(loginAdminResponse);
+        assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+        AddBookRequest addBookRequest = new AddBookRequest();
+        addBookRequest.setTitle("Book title");
+        addBookRequest.setAuthor("Author");
+        addBookRequest.setGenre("fiction");
+        addBookRequest.setDescription("This is a fiction book");
+        AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+        assertNotNull(addBookResponse);
+        assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
+    }
+
+
 
 }
