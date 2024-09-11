@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.service;
 
+import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.model.Genre;
 import com.librarymanagementsystem.data.repositories.AdminRepository;
 import com.librarymanagementsystem.dtos.request.*;
@@ -9,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
@@ -67,10 +71,10 @@ public class AdminServiceTest {
     @Test
     public void testThatAdminCanAddBook(){
         RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
-        registerAdminRequest.setFirstName("yinka");
-        registerAdminRequest.setLastName("obanla");
-        registerAdminRequest.setUsername("obanla");
-        registerAdminRequest.setEmail("obanla@gmail.com");
+        registerAdminRequest.setFirstName("yusuf");
+        registerAdminRequest.setLastName("falade");
+        registerAdminRequest.setUsername("faladex");
+        registerAdminRequest.setEmail("faladex@gmail.com");
         registerAdminRequest.setPassword("1234");
         RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
         assertNotNull(response);
@@ -78,15 +82,15 @@ public class AdminServiceTest {
 
 
         LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
-        loginAdminRequest.setUsername("obanla");
+        loginAdminRequest.setUsername("faladex");
         loginAdminRequest.setPassword("1234");
         LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
         assertNotNull(loginAdminResponse);
         assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
 
         AddBookRequest addBookRequest = new AddBookRequest();
-        addBookRequest.setTitle("Book title");
-        addBookRequest.setAuthor("Author");
+        addBookRequest.setTitle("my book");
+        addBookRequest.setAuthor("bro");
         addBookRequest.setGenre("fiction");
         addBookRequest.setDescription("This is a fiction book");
         AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
@@ -94,6 +98,124 @@ public class AdminServiceTest {
         assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
     }
 
+    @Test
+    public void testThatAdminCanUpdateBook(){
 
+        RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+        registerAdminRequest.setFirstName("john");
+        registerAdminRequest.setLastName("thomas");
+        registerAdminRequest.setUsername("thomas");
+        registerAdminRequest.setEmail("faladex@gmail.com");
+        registerAdminRequest.setPassword("1234");
+        RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
+
+
+        LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+        loginAdminRequest.setUsername("thomas");
+        loginAdminRequest.setPassword("1234");
+        LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+        assertNotNull(loginAdminResponse);
+        assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+        AddBookRequest addBookRequest = new AddBookRequest();
+        addBookRequest.setTitle("new book");
+        addBookRequest.setAuthor("bro");
+        addBookRequest.setGenre("fiction");
+        addBookRequest.setDescription("This is a fiction book");
+        AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+        assertNotNull(addBookResponse);
+        assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
+
+        UpdateBookRequest updateBookRequest = new UpdateBookRequest();
+        updateBookRequest.setGenre("updated genre");
+        updateBookRequest.setDescription("Updated description");
+        UpdateBookResponse updateBookResponse = adminService.updateBook(updateBookRequest);
+        assertNotNull(updateBookResponse);
+        assertThat(updateBookResponse.getMessage()).isEqualTo("Book details updated successfully");
+
+
+    }
+
+    @Test
+    public void testThatAdminCanViewAllBooks(){
+            RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+            registerAdminRequest.setFirstName("yusuf");
+            registerAdminRequest.setLastName("falade");
+            registerAdminRequest.setUsername("faladex");
+            registerAdminRequest.setEmail("faladex@gmail.com");
+            registerAdminRequest.setPassword("1234");
+            RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+            assertNotNull(response);
+            assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
+
+
+            LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+            loginAdminRequest.setUsername("faladex");
+            loginAdminRequest.setPassword("1234");
+            LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+            assertNotNull(loginAdminResponse);
+            assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+            AddBookRequest addBookRequest = new AddBookRequest();
+            addBookRequest.setTitle("new book");
+            addBookRequest.setAuthor("bro");
+            addBookRequest.setGenre("fiction");
+            addBookRequest.setDescription("This is a fiction book");
+            AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+            assertNotNull(addBookResponse);
+            assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
+
+            AddBookRequest addBookRequest2 = new AddBookRequest();
+            addBookRequest2.setTitle("my book2");
+            addBookRequest2.setAuthor("bro2");
+            addBookRequest2.setGenre("fiction");
+            addBookRequest2.setDescription("This is a fiction book");
+            AddBookResponse addBookResponse2 = adminService.addBook(addBookRequest2);
+            assertNotNull(addBookResponse2);
+            assertThat(addBookResponse2.getMessage()).isEqualTo("Book successfully added!");
+
+            List<Book> books =  adminService.findAllBooks();
+            assertNotNull(books);
+            assertEquals(books.size(),2);
+    }
+    @Test
+    public void testThatAdminCanFindBookByTitle(){
+        RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+        registerAdminRequest.setFirstName("yusuf");
+        registerAdminRequest.setLastName("falade");
+        registerAdminRequest.setUsername("faladex");
+        registerAdminRequest.setEmail("faladex@gmail.com");
+        registerAdminRequest.setPassword("1234");
+        RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
+
+
+        LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+        loginAdminRequest.setUsername("faladex");
+        loginAdminRequest.setPassword("1234");
+        LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+        assertNotNull(loginAdminResponse);
+        assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+        AddBookRequest addBookRequest = new AddBookRequest();
+        addBookRequest.setTitle("hibiscus");
+        addBookRequest.setAuthor("bro");
+        addBookRequest.setGenre("fiction");
+        addBookRequest.setDescription("This is a fiction book");
+        AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+        assertNotNull(addBookResponse);
+        assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
+
+        Book foundBook = adminService.findBookByTitle("hibiscus");
+        assertNotNull(foundBook);
+
+    }
+    @Test
+    public void testThatAdminCanFindBookByAuthor(){
+
+    }
 
 }

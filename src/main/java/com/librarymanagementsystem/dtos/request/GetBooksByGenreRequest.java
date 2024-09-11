@@ -6,11 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class UpdateBookRequest {
-    private String title;
-    private String author;
+public class GetBooksByGenreRequest {
     private String genre;
-    private String description;
-
-
 }

@@ -9,14 +9,13 @@ import com.librarymanagementsystem.dtos.request.AddBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
 import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
 import com.librarymanagementsystem.dtos.request.UpdateBookRequest;
-import com.librarymanagementsystem.dtos.responses.AddBookResponse;
-import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
+import com.librarymanagementsystem.dtos.responses.*;
 
-import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateBookResponse;
 import com.librarymanagementsystem.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -66,7 +65,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AddBookResponse addBook(AddBookRequest addBookRequest) {
-        validateBookRequest(addBookRequest.getTitle(), addBookRequest.getAuthor());
+        validateBookRequest(addBookRequest.getTitle());
         Book newBook = new Book();
         newBook.setTitle(addBookRequest.getTitle());
         newBook.setAuthor(addBookRequest.getAuthor());
@@ -82,31 +81,49 @@ public class AdminServiceImpl implements AdminService {
 
 
 
-//    @Override
-//    public UpdateBookResponse updateBook(UpdateBookRequest updateBookRequest) {
-//        validateBookRequest(updateBookRequest.getTitle(), updateBookRequest.getAuthor());
-//        Book bookToUpdate = bookRepository.findByTitleAndAuthor(updateBookRequest.getTitle(), updateBookRequest.getAuthor());
-//
-//        if (bookToUpdate == null) {
-//            throw new BookNotFoundException("Book not found");
-//        }
-//
-//        bookToUpdate.setGenre(updateBookRequest.getGenre());
-//        bookToUpdate.setGenre(updateBookRequest.getGenre());
-//        bookToUpdate.setDescription(updateBookRequest.getDescription());
-//
-//        bookRepository.save(bookToUpdate);
-//
-//        UpdateBookResponse updateBookResponse = new UpdateBookResponse();
-//        updateBookResponse.setMessage("Book successfully updated!");
-//
-//        return updateBookResponse;
-//
-//    }
+    @Override
+    public UpdateBookResponse updateBook(UpdateBookRequest updateBookRequest) {
+        Book book = bookRepository.findByTitleAndAuthor(updateBookRequest.getTitle(), updateBookRequest.getAuthor());
+        if (book == null) {
+            throw new BookNotFoundException("Book not found");
+        }
+        book.setGenre(updateBookRequest.getGenre());
+        book.setDescription(updateBookRequest.getDescription());
+        bookRepository.save(book);
+        UpdateBookResponse updateBookResponse = new UpdateBookResponse();
+        updateBookResponse.setMessage("Book details updated successfully");
+        return updateBookResponse;
+    }
 
-    private void validateBookRequest(String title,  String author) {
+    @Override
+    public List<Book> findAllBooks() {
+        return bookRepository.findAll();
+
+    }
+
+    @Override
+    public Book findBookByTitle(String title) {
+        Book book = bookRepository.findByTitle(title);
+        if(!book.getTitle().equals(title)) throw new BookNotFoundException("Book not found");
+        return book;
+//        return bookRepository.findByTitle(title);
+    }
+
+    @Override
+    public List<Book> findBooksByAuthor(String author) {
+        return bookRepository.findBooksByAuthor(author);
+
+    }
+
+    @Override
+    public List<Book> findBooksByGenre(String genre) {
+            return bookRepository.findBooksByGenre(genre);
+
+    }
+
+    private void validateBookRequest(String title) {
             for (Book book : bookRepository.findAll()) {
-                if (book.getTitle().equals(title) && book.getAuthor().equals(author)){
+                if (book.getTitle().equals(title)){
                     throw new BookWithSameTitleAndAuthorException("Book with same title and author already exists");
                 }
 

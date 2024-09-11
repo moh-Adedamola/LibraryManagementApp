@@ -1,20 +1,15 @@
 package com.librarymanagementsystem.controller;
 
-import com.librarymanagementsystem.dtos.request.AddBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
-import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
-import com.librarymanagementsystem.dtos.responses.AddBookResponse;
-import com.librarymanagementsystem.dtos.responses.ApiResponse;
-import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
+import com.librarymanagementsystem.data.model.Book;
+import com.librarymanagementsystem.dtos.request.*;
+import com.librarymanagementsystem.dtos.responses.*;
 import com.librarymanagementsystem.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -56,5 +51,55 @@ public class AdminController {
             return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/updateBook")
+    public ResponseEntity<?> updateBook(@RequestBody UpdateBookRequest updateBookRequest) {
+        try {
+            UpdateBookResponse updateBookResponse = adminService.updateBook(updateBookRequest);
+            return new ResponseEntity<>(new ApiResponse(true, updateBookResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBookByTitle")
+    public ResponseEntity<?> findBookByTitle(@RequestBody GetBookByTitleRequest getBookByTitleRequest ) {
+        try {
+            Book book = adminService.findBookByTitle(getBookByTitleRequest.getTitle());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBooksByAuthor")
+    public ResponseEntity<?> findBooksByAuthor(@RequestBody GetBooksByAuthorRequest getBooksByAuthorRequest ) {
+        try {
+            List<Book> book = adminService.findBooksByAuthor(getBooksByAuthorRequest.getAuthor());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBooksByGenre")
+    public ResponseEntity<?> findBooksByGenre(@RequestBody GetBooksByGenreRequest getBooksByGenreRequest ) {
+        try {
+            List<Book> book = adminService.findBooksByGenre(getBooksByGenreRequest.getGenre());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+//    @GetMapping("/findAllBooks")
+//    public ResponseEntity<?> findAllBooks(@RequestBody GetBooksRequest getBooksRequest) {
+//        try {
+//            List<Book> books = adminService.findAllBooks();
+//            return new ResponseEntity<>(new ApiResponse(true, books), HttpStatus.CREATED);
+//        } catch (Exception exception) {
+//            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
 }
