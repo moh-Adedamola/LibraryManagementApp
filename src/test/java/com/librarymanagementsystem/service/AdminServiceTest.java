@@ -3,6 +3,7 @@ package com.librarymanagementsystem.service;
 import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.model.Genre;
 import com.librarymanagementsystem.data.repositories.AdminRepository;
+import com.librarymanagementsystem.data.repositories.BookRepository;
 import com.librarymanagementsystem.dtos.request.*;
 import com.librarymanagementsystem.dtos.responses.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,8 @@ public class AdminServiceTest {
 
     @Autowired
     private AdminRepository adminRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @BeforeEach
     public void setUp() {
@@ -214,7 +217,43 @@ public class AdminServiceTest {
 
     }
     @Test
-    public void testThatAdminCanFindBookByAuthor(){
+    public void testThatAdminCanDeleteBook(){
+        RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+        registerAdminRequest.setFirstName("mo");
+        registerAdminRequest.setLastName("sallah");
+        registerAdminRequest.setUsername("sallah");
+        registerAdminRequest.setEmail("mosallah@gmail.com");
+        registerAdminRequest.setPassword("1234");
+        RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
+
+
+        LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+        loginAdminRequest.setUsername("sallah");
+        loginAdminRequest.setPassword("1234");
+        LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+        assertNotNull(loginAdminResponse);
+        assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+//        AddBookRequest addBookRequest = new AddBookRequest();
+//        addBookRequest.setTitle("lonely");
+//        addBookRequest.setAuthor("bro");
+//        addBookRequest.setGenre("fiction");
+//        addBookRequest.setDescription("This is a fiction book");
+//        AddBookResponse addBookResponse = adminService.addBook(addBookRequest);
+//        assertNotNull(addBookResponse);
+//        assertThat(addBookResponse.getMessage()).isEqualTo("Book successfully added!");
+
+        Book book = adminService.findBookById("66e23ae62c426c1c4917784a");
+        assertNotNull(book);
+
+        adminService.deleteBook("66e23ae62c426c1c4917784a");
+        assertEquals(0,bookRepository.count());
+
+
+
+
 
     }
 

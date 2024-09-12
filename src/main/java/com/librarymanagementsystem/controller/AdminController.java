@@ -91,6 +91,15 @@ public class AdminController {
             return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+    @DeleteMapping("/deleteBook")
+    public ResponseEntity<?> deleteBook(@RequestBody DeleteBookRequest deleteBookRequest ) {
+        try {
+            DeleteBookResponse book = adminService.deleteBook(deleteBookRequest.getId());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 //    @GetMapping("/findAllBooks")
 //    public ResponseEntity<?> findAllBooks(@RequestBody GetBooksRequest getBooksRequest) {

@@ -106,7 +106,6 @@ public class AdminServiceImpl implements AdminService {
         Book book = bookRepository.findByTitle(title);
         if(!book.getTitle().equals(title)) throw new BookNotFoundException("Book not found");
         return book;
-//        return bookRepository.findByTitle(title);
     }
 
     @Override
@@ -119,6 +118,19 @@ public class AdminServiceImpl implements AdminService {
     public List<Book> findBooksByGenre(String genre) {
             return bookRepository.findBooksByGenre(genre);
 
+    }
+
+    @Override
+    public DeleteBookResponse deleteBook(String id) {
+        bookRepository.deleteById(id);
+        DeleteBookResponse deleteBookResponse = new DeleteBookResponse();
+        deleteBookResponse.setMessage("Book successfully deleted!");
+        return deleteBookResponse;
+    }
+
+    @Override
+    public Book findBookById(String id) {
+        return bookRepository.findBookById(id);
     }
 
     private void validateBookRequest(String title) {

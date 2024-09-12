@@ -5,10 +5,7 @@ import com.librarymanagementsystem.dtos.request.AddBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
 import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
 import com.librarymanagementsystem.dtos.request.UpdateBookRequest;
-import com.librarymanagementsystem.dtos.responses.AddBookResponse;
-import com.librarymanagementsystem.dtos.responses.LoginAdminResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterAdminResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateBookResponse;
+import com.librarymanagementsystem.dtos.responses.*;
 
 import java.util.List;
 
@@ -28,4 +25,8 @@ public interface AdminService {
     List<Book> findBooksByAuthor(String author);
 
     List<Book> findBooksByGenre(String genre);
+
+    DeleteBookResponse deleteBook(String id);
+
+    Book findBookById(String lonely);
 }

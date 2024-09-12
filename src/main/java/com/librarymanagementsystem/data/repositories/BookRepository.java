@@ -13,4 +13,6 @@ public interface BookRepository extends MongoRepository<Book, String> {
     List<Book> findBooksByAuthor(String author);
 
     List<Book> findBooksByGenre(String genre);
+
+    Book findBookById(String id);
 }
