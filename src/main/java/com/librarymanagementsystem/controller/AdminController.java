@@ -101,6 +101,16 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/logoutAdmin")
+    public ResponseEntity<?> logoutAdmin(@RequestBody LogoutAdminRequest logoutAdminRequest) {
+        try {
+            LogoutAdminResponse logoutAdminResponse = adminService.logoutAdmin(logoutAdminRequest);
+            return new ResponseEntity<>(new ApiResponse(true, logoutAdminResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 //    @GetMapping("/findAllBooks")
 //    public ResponseEntity<?> findAllBooks(@RequestBody GetBooksRequest getBooksRequest) {
 //        try {

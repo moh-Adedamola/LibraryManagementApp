@@ -3,12 +3,11 @@ package com.librarymanagementsystem.service;
 import com.librarymanagementsystem.data.model.Admin;
 
 import com.librarymanagementsystem.data.model.Book;
+import com.librarymanagementsystem.data.model.User;
 import com.librarymanagementsystem.data.repositories.AdminRepository;
 import com.librarymanagementsystem.data.repositories.BookRepository;
-import com.librarymanagementsystem.dtos.request.AddBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginAdminRequest;
-import com.librarymanagementsystem.dtos.request.RegisterAdminRequest;
-import com.librarymanagementsystem.dtos.request.UpdateBookRequest;
+import com.librarymanagementsystem.data.repositories.UserRepository;
+import com.librarymanagementsystem.dtos.request.*;
 import com.librarymanagementsystem.dtos.responses.*;
 
 import com.librarymanagementsystem.exception.*;
@@ -24,6 +23,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
@@ -133,6 +135,25 @@ public class AdminServiceImpl implements AdminService {
         return bookRepository.findBookById(id);
     }
 
+    @Override
+    public LogoutAdminResponse logoutAdmin(LogoutAdminRequest logoutAdminRequest) {
+        String username = logoutAdminRequest.getUsername();
+
+        for (Admin admin : adminRepository.findAll()) {
+            if (admin.getUsername().equals(username)) {
+                admin.setLogin(false);
+                adminRepository.save(admin);
+                LogoutAdminResponse logoutAdminResponse = new LogoutAdminResponse();
+                logoutAdminResponse.setMessage("Successfully logged out");
+                return logoutAdminResponse;
+            }
+        }
+
+        throw new AdminLogoutException("Admin must be logged in before they can logout");
+    }
+
+
+
     private void validateBookRequest(String title) {
             for (Book book : bookRepository.findAll()) {
                 if (book.getTitle().equals(title)){
@@ -161,4 +182,8 @@ public class AdminServiceImpl implements AdminService {
             throw new InvalidRegisterRequestException("Field cannot be empty");
         }
     }
+
+
+
+
 }

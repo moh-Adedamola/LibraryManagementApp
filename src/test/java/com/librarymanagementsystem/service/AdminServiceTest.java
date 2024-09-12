@@ -250,8 +250,33 @@ public class AdminServiceTest {
 
         adminService.deleteBook("66e23ae62c426c1c4917784a");
         assertEquals(0,bookRepository.count());
+    }
+
+    @Test
+    public void testToLogoutAdmin(){
+        RegisterAdminRequest registerAdminRequest = new RegisterAdminRequest();
+        registerAdminRequest.setFirstName("yinka");
+        registerAdminRequest.setLastName("obanla");
+        registerAdminRequest.setUsername("obanla");
+        registerAdminRequest.setEmail("obanla@gmail.com");
+        registerAdminRequest.setPassword("1234");
+        RegisterAdminResponse response = adminService.registerAdmin(registerAdminRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Admin Successfully registered!");
 
 
+        LoginAdminRequest loginAdminRequest = new LoginAdminRequest();
+        loginAdminRequest.setUsername("obanla");
+        loginAdminRequest.setPassword("1234");
+        LoginAdminResponse loginAdminResponse = adminService.loginAdmin(loginAdminRequest);
+        assertNotNull(loginAdminResponse);
+        assertThat(loginAdminResponse.getMessage()).isEqualTo("Login Successful");
+
+        LogoutAdminRequest logoutAdminRequest = new LogoutAdminRequest();
+        logoutAdminRequest.setUsername("obanla");
+        LogoutAdminResponse logoutAdminResponse = adminService.logoutAdmin(logoutAdminRequest);
+        assertNotNull(logoutAdminResponse);
+        assertThat(logoutAdminResponse.getMessage()).isEqualTo("Successfully logged out");
 
 
 
