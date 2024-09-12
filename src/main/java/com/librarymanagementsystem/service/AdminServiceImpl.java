@@ -46,24 +46,19 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public LoginAdminResponse loginAdmin(LoginAdminRequest loginAdminRequest) {
-        String username = loginAdminRequest.getUsername();
-        String password = loginAdminRequest.getPassword();
-
-        for (Admin admin : adminRepository.findAll()) {
-            if (admin.getUsername().equals(username)) {
-                if (admin.getPassword().equals(password)) {
-                    admin.setLogin(true);
-                    adminRepository.save(admin);
-                    LoginAdminResponse loginAdminResponse = new LoginAdminResponse();
-                    loginAdminResponse.setMessage("Login Successful");
-                    return loginAdminResponse;
-                } else {
-                    throw new UsernameOrPasswordException("Invalid username or password");
-                }
-            }
+        Admin admin = adminRepository.findByUsername(loginAdminRequest.getUsername());
+        if (admin == null) {
+            throw new AdminNotFoundException("Admin does not exist");
         }
-        throw new UserNotFoundException("User does not exist");
+        if (!admin.getPassword().equals(loginAdminRequest.getPassword())) {
+            throw new UsernameOrPasswordException("Invalid username or password");
+        }
+        LoginAdminResponse loginAdminResponse = new LoginAdminResponse();
+        loginAdminResponse.setMessage("Login Successful");
+        return loginAdminResponse;
     }
+
+
 
     @Override
     public AddBookResponse addBook(AddBookRequest addBookRequest) {
@@ -137,19 +132,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public LogoutAdminResponse logoutAdmin(LogoutAdminRequest logoutAdminRequest) {
-        String username = logoutAdminRequest.getUsername();
+        Admin admin = adminRepository.findByUsername(logoutAdminRequest.getUsername());
 
-        for (Admin admin : adminRepository.findAll()) {
-            if (admin.getUsername().equals(username)) {
-                admin.setLogin(false);
-                adminRepository.save(admin);
-                LogoutAdminResponse logoutAdminResponse = new LogoutAdminResponse();
-                logoutAdminResponse.setMessage("Successfully logged out");
-                return logoutAdminResponse;
-            }
+        if (admin == null) {
+            throw new AdminNotFoundException("Admin not found");
         }
 
-        throw new AdminLogoutException("Admin must be logged in before they can logout");
+//        if (!admin.isLogin()) {
+//            throw new AdminLogoutException("Admin must first be logged in");
+//        }
+        admin.setLogin(false);
+        adminRepository.save(admin);
+        LogoutAdminResponse logoutAdminResponse = new LogoutAdminResponse();
+        logoutAdminResponse.setMessage("Logout successful");
+        return logoutAdminResponse;
+
+
     }
 
 
