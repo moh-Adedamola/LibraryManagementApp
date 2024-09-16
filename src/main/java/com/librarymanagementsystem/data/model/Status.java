@@ -12,10 +12,8 @@ import java.time.LocalDateTime;
 public class Status {
     @Id
     private String id;
-    private String name;
-    private String description;
     private boolean isAvailable;
-    private boolean isBorrowable;
+    private boolean isBorrowed;
     private LocalDateTime dueDate;
 
 }

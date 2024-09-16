@@ -1,10 +1,14 @@
 package com.librarymanagementsystem.service;
 
+import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.model.User;
+import com.librarymanagementsystem.data.repositories.BookRepository;
 import com.librarymanagementsystem.data.repositories.UserRepository;
+import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
 import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
+import com.librarymanagementsystem.dtos.responses.BorrowBookResponse;
 import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
 import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
@@ -17,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Override
     public LoginUserResponse loginUser(LoginUserRequest loginUserRequest) {
@@ -78,17 +85,38 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidRequestException("Password is required");
             }
 
+        user.setFirstName(updateUserRequest.getFirstName());
+        user.setLastName(updateUserRequest.getLastName());
+        user.setEmail(updateUserRequest.getEmail());
+        user.setPassword(updateUserRequest.getPassword());
 
-            user.setFirstName(updateUserRequest.getFirstName());
-            user.setLastName(updateUserRequest.getLastName());
-            user.setEmail(updateUserRequest.getEmail());
-            user.setPassword(updateUserRequest.getPassword());
-
-            userRepository.save(user);
-            UpdateUserResponse updateUserResponse = new UpdateUserResponse();
-            updateUserResponse.setMessage("Update details Successful");
-            return updateUserResponse;
+        userRepository.save(user);
+        UpdateUserResponse updateUserResponse = new UpdateUserResponse();
+        updateUserResponse.setMessage("Update details Successful");
+        return updateUserResponse;
         }
+
+    @Override
+    public BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest) {
+        Book book = bookRepository.findByTitle(borrowBookRequest.getTitle());
+        if (book == null) {
+            throw new BookNotFoundException("Book does not exist");
+        }
+        if (book.getStatus().isBorrowed()){
+            throw new BookAlreadyBorrowedException("Book is already borrowed");
+        }
+
+        User user = userRepository.findByEmail(borrowBookRequest.getUserEmail());
+        if (!isUserLoggedIn()) {
+            throw new UserLoginException("User must be logged in to borrow book");
+        }
+        book.setUser(user);
+        bookRepository.save(book);
+        BorrowBookResponse borrowBookResponse = new BorrowBookResponse();
+        borrowBookResponse.setMessage("Borrowed book successfully");
+        return borrowBookResponse;
+
+    }
 
     private boolean isUserLoggedIn() {
         return true;

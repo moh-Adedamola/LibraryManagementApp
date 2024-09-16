@@ -19,5 +19,6 @@ public class Book {
     private String genre;
     private String description;
     private Status status;
+    private User user;
 
 }

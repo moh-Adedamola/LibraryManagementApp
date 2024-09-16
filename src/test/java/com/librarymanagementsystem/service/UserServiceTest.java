@@ -1,9 +1,11 @@
 package com.librarymanagementsystem.service;
 
 import com.librarymanagementsystem.data.repositories.UserRepository;
+import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
 import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
+import com.librarymanagementsystem.dtos.responses.BorrowBookResponse;
 import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
 import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
@@ -93,6 +95,34 @@ public class UserServiceTest {
         UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest);
         assertNotNull(updateUserResponse);
         assertThat(updateUserResponse.getMessage()).isEqualTo("Update details Successful");
+
+    }
+
+    @Test
+    public void testThatUserCanBorrowBook(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        BorrowBookRequest borrowBookRequest = new BorrowBookRequest();
+        borrowBookRequest.setTitle("no retreat no surrender");
+        borrowBookRequest.setAuthor("crimson moh");
+        borrowBookRequest.setGenre("action");
+        BorrowBookResponse borrowBookResponse = userService.borrowBook(borrowBookRequest);
+        assertNotNull(borrowBookResponse);
+        assertThat(borrowBookResponse.getMessage()).isEqualTo("Borrowed book successfully");
 
     }
 

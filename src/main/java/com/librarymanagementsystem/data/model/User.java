@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,5 +22,6 @@ public class User {
     private String password;
     private LocalDateTime dateRegistered;
     private boolean isLogin;
+    private List<Book> borrowedBooks;
 
 }

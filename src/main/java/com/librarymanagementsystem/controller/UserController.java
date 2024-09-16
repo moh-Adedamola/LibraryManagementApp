@@ -1,12 +1,10 @@
 package com.librarymanagementsystem.controller;
 
+import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
 import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
 import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
-import com.librarymanagementsystem.dtos.responses.ApiResponse;
-import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
+import com.librarymanagementsystem.dtos.responses.*;
 import com.librarymanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +48,16 @@ public class UserController {
         try{
             UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest);
             return new ResponseEntity<>(new ApiResponse(true,updateUserResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/borrowBook")
+    public ResponseEntity<?> borrowBook(@RequestBody BorrowBookRequest borrowBookRequest) {
+        try{
+            BorrowBookResponse borrowBookResponse = userService.borrowBook(borrowBookRequest);
+            return new ResponseEntity<>(new ApiResponse(true,borrowBookResponse), HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), HttpStatus.BAD_REQUEST);
         }

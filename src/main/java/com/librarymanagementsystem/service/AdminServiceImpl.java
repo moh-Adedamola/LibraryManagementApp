@@ -101,6 +101,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Book findBookByTitle(String title) {
         Book book = bookRepository.findByTitle(title);
+        if (book == null) {
+            throw new BookNotFoundException("Book not found");
+        }
         if(!book.getTitle().equals(title)) throw new BookNotFoundException("Book not found");
         return book;
     }
