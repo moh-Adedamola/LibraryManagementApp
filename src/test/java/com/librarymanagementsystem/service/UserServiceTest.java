@@ -3,8 +3,10 @@ package com.librarymanagementsystem.service;
 import com.librarymanagementsystem.data.repositories.UserRepository;
 import com.librarymanagementsystem.dtos.request.LoginUserRequest;
 import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
+import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
 import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
 import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
+import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
 import com.librarymanagementsystem.exception.UserAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,6 +65,34 @@ public class UserServiceTest {
         assertNotNull(loginUserResponse);
         assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
 
+
+    }
+
+    @Test
+    public void testToUpdateUser(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
+        updateUserRequest.setFirstName("sekinat");
+        updateUserRequest.setLastName("bisiriyu");
+        updateUserRequest.setPassword("095770");
+        UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest);
+        assertNotNull(updateUserResponse);
+        assertThat(updateUserResponse.getMessage()).isEqualTo("Update details Successful");
 
     }
 
