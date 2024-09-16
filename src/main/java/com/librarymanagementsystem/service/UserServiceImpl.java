@@ -102,9 +102,10 @@ public class UserServiceImpl implements UserService {
         if (book == null) {
             throw new BookNotFoundException("Book does not exist");
         }
-        if (book.getStatus().isBorrowed()){
+        if (book.getStatus() != null && book.getStatus().isBorrowed()) {
             throw new BookAlreadyBorrowedException("Book is already borrowed");
         }
+
 
         User user = userRepository.findByEmail(borrowBookRequest.getUserEmail());
         if (!isUserLoggedIn()) {
