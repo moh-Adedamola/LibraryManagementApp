@@ -1,20 +1,17 @@
 package com.librarymanagementsystem.service;
 
+import com.librarymanagementsystem.data.model.Admin;
 import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.model.User;
 import com.librarymanagementsystem.data.repositories.BookRepository;
 import com.librarymanagementsystem.data.repositories.UserRepository;
-import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginUserRequest;
-import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
-import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
-import com.librarymanagementsystem.dtos.responses.BorrowBookResponse;
-import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
+import com.librarymanagementsystem.dtos.request.*;
+import com.librarymanagementsystem.dtos.responses.*;
 import com.librarymanagementsystem.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User does not exist");
         }
 
-        if (!isUserLoggedIn()) {
+        if (isUserLoggedIn()) {
             throw new UserLoginException("User must be logged in to update details");
         }
 
@@ -108,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
 
         User user = userRepository.findByEmail(borrowBookRequest.getUserEmail());
-        if (!isUserLoggedIn()) {
+        if (isUserLoggedIn()) {
             throw new UserLoginException("User must be logged in to borrow book");
         }
         book.setUser(user);
@@ -119,8 +116,64 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<Book> findAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    @Override
+    public Book findBookByTitle(String title) {
+        title = title.toLowerCase();
+        Book book = bookRepository.findByTitle(title);
+        if (book == null) {
+            throw new BookNotFoundException("Book not found");
+        }
+        if(!book.getTitle().equals(title)) {
+            throw new BookNotFoundException("Book not found");
+        }
+        return book;
+    }
+
+    @Override
+    public List<Book> findBooksByAuthor(String author) {
+
+        author = author.trim().toLowerCase();
+        if (author.isEmpty()) {
+            throw new InvalidAuthorException("No books found for this Author");
+        }
+        return bookRepository.findBooksByAuthor(author);
+
+    }
+
+    @Override
+    public List<Book> findBooksByGenre(String genre) {
+        genre = genre.trim().toLowerCase();
+        if (genre.isEmpty()) {
+            throw new InvalidGenreException("No books found for this Genre");
+        }
+        return bookRepository.findBooksByGenre(genre);
+    }
+
+    @Override
+    public LogoutUserResponse logoutUser(LogoutUserRequest logoutUserRequest) {
+        User user = userRepository.findByEmail(logoutUserRequest.getEmail().toLowerCase());
+
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        user.setLogin(false);
+        userRepository.save(user);
+        LogoutUserResponse logoutUserResponse = new LogoutUserResponse();
+        logoutUserResponse.setMessage("Logout successful");
+        return logoutUserResponse;
+
+
+
+    }
+
     private boolean isUserLoggedIn() {
-        return true;
+        return false;
     }
 
 

@@ -1,13 +1,10 @@
 package com.librarymanagementsystem.service;
 
-import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginUserRequest;
-import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
-import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
-import com.librarymanagementsystem.dtos.responses.BorrowBookResponse;
-import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
+import com.librarymanagementsystem.data.model.Book;
+import com.librarymanagementsystem.dtos.request.*;
+import com.librarymanagementsystem.dtos.responses.*;
+
+import java.util.List;
 
 public interface UserService {
     LoginUserResponse loginUser(LoginUserRequest loginUserRequest);
@@ -17,4 +14,14 @@ public interface UserService {
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 
     BorrowBookResponse borrowBook(BorrowBookRequest borrowBookRequest);
+
+    List<Book> findAllBooks();
+
+    Book findBookByTitle(String title);
+
+    List<Book> findBooksByAuthor(String author);
+
+    List<Book> findBooksByGenre(String genre);
+
+    LogoutUserResponse logoutUser(LogoutUserRequest logoutUserRequest);
 }

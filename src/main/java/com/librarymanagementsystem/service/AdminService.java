@@ -25,7 +25,8 @@ public interface AdminService {
 
     DeleteBookResponse deleteBook(String id);
 
-    Book findBookById(String lonely);
+    Book findBookById(String title);
 
     LogoutAdminResponse logoutAdmin(LogoutAdminRequest logoutAdminRequest);
+
 }

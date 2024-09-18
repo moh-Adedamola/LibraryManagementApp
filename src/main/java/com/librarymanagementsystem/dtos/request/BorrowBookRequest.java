@@ -10,6 +10,8 @@ public class BorrowBookRequest {
     private String userEmail;
     private String title;
     private String author;
+    private String genre;
+
 
 
 }

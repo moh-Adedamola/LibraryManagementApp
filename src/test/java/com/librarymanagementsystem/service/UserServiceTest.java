@@ -1,19 +1,16 @@
 package com.librarymanagementsystem.service;
 
+import com.librarymanagementsystem.data.model.Book;
 import com.librarymanagementsystem.data.repositories.UserRepository;
-import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginUserRequest;
-import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
-import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
-import com.librarymanagementsystem.dtos.responses.BorrowBookResponse;
-import com.librarymanagementsystem.dtos.responses.LoginUserResponse;
-import com.librarymanagementsystem.dtos.responses.RegisterUserResponse;
-import com.librarymanagementsystem.dtos.responses.UpdateUserResponse;
+import com.librarymanagementsystem.dtos.request.*;
+import com.librarymanagementsystem.dtos.responses.*;
 import com.librarymanagementsystem.exception.UserAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -123,6 +120,113 @@ public class UserServiceTest {
         BorrowBookResponse borrowBookResponse = userService.borrowBook(borrowBookRequest);
         assertNotNull(borrowBookResponse);
         assertThat(borrowBookResponse.getMessage()).isEqualTo("Borrowed book successfully");
+
+    }
+
+    @Test
+    public void testThatUserCanFindAllBooks(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        Book book = new Book();
+        book.setTitle("no retreat no surrender");
+        book.setAuthor("crimson moh");
+        book.setGenre("action");
+
+        Book book2 = new Book();
+        book2.setTitle("no retreat no surrender");
+        book2.setAuthor("crimson moh");
+        book2.setGenre("action");
+
+        List<Book> books = userService.findAllBooks();
+        assertNotNull(books);
+        assertThat(books.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    public void testThatUserCanFindBookByTitle(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        Book foundBook = userService.findBookByTitle("hibiscus");
+        assertNotNull(foundBook);
+    }
+
+    @Test
+    public void testThatUserCanFindBookByAuthor(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        List<Book> books =  userService.findBooksByAuthor("author");
+        assertNotNull(books);
+
+    }
+
+    @Test
+    public void testToLogoutUser(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("sekinat");
+        registerUserRequest.setLastName("solonge");
+        registerUserRequest.setEmail("sekinat@gmail.com");
+        registerUserRequest.setPassword("password");
+        RegisterUserResponse response = userService.registerUser(registerUserRequest);
+        assertNotNull(response);
+        assertThat(response.getMessage()).isEqualTo("Registration Successful");
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setEmail("sekinat@gmail.com");
+        loginUserRequest.setPassword("password");
+        LoginUserResponse loginUserResponse = userService.loginUser(loginUserRequest);
+        assertNotNull(loginUserResponse);
+        assertThat(loginUserResponse.getMessage()).isEqualTo("Login Successful");
+
+        LogoutUserRequest logoutUserRequest = new LogoutUserRequest();
+        logoutUserRequest.setEmail("sekinat@gmail.com");
+        LogoutUserResponse logoutUserResponse = userService.logoutUser(logoutUserRequest);
+        assertNotNull(logoutUserResponse);
+        assertThat(logoutUserResponse.getMessage()).isEqualTo("Successfully logged out");
+
+
 
     }
 

@@ -1,15 +1,15 @@
 package com.librarymanagementsystem.controller;
 
-import com.librarymanagementsystem.dtos.request.BorrowBookRequest;
-import com.librarymanagementsystem.dtos.request.LoginUserRequest;
-import com.librarymanagementsystem.dtos.request.RegisterUserRequest;
-import com.librarymanagementsystem.dtos.request.UpdateUserRequest;
+import com.librarymanagementsystem.data.model.Book;
+import com.librarymanagementsystem.dtos.request.*;
 import com.librarymanagementsystem.dtos.responses.*;
 import com.librarymanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -60,6 +60,46 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(true,borrowBookResponse), HttpStatus.CREATED);
         } catch (Exception exception) {
             return new ResponseEntity<>(new ApiResponse(false,exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBookByTitle")
+    public ResponseEntity<?> findBookByTitle(@RequestBody GetBookByTitleRequest getBookByTitleRequest ) {
+        try {
+            Book book = userService.findBookByTitle(getBookByTitleRequest.getTitle());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBooksByAuthor")
+    public ResponseEntity<?> findBooksByAuthor(@RequestBody GetBooksByAuthorRequest getBooksByAuthorRequest ) {
+        try {
+            List<Book> book = userService.findBooksByAuthor(getBooksByAuthorRequest.getAuthor());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findBooksByGenre")
+    public ResponseEntity<?> findBooksByGenre(@RequestBody GetBooksByGenreRequest getBooksByGenreRequest ) {
+        try {
+            List<Book> book = userService.findBooksByGenre(getBooksByGenreRequest.getGenre());
+            return new ResponseEntity<>(new ApiResponse(true, book), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/logoutUser")
+    public ResponseEntity<?> logoutUser(@RequestBody LogoutUserRequest logoutUserRequest) {
+        try {
+            LogoutUserResponse logoutUserResponse = userService.logoutUser(logoutUserRequest);
+            return new ResponseEntity<>(new ApiResponse(true, logoutUserResponse), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(new ApiResponse(false, exception.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

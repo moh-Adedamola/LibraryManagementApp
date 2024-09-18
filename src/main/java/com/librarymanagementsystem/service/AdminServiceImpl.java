@@ -100,6 +100,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Book findBookByTitle(String title) {
+        title = title.trim().toLowerCase();
         Book book = bookRepository.findByTitle(title);
         if (book == null) {
             throw new BookNotFoundException("Book not found");
@@ -110,12 +111,20 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Book> findBooksByAuthor(String author) {
+        if (author == null || author.isEmpty()) {
+            throw new InvalidAuthorException("No books found for this Author");
+        }
+        author = author.trim().toLowerCase();
         return bookRepository.findBooksByAuthor(author);
 
     }
 
     @Override
     public List<Book> findBooksByGenre(String genre) {
+        if (genre == null || genre.isEmpty()) {
+            throw new InvalidGenreException("No books found for this Genre");
+        }
+        genre = genre.trim().toLowerCase();
             return bookRepository.findBooksByGenre(genre);
 
     }
@@ -156,6 +165,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     private void validateBookRequest(String title) {
+
             for (Book book : bookRepository.findAll()) {
                 if (book.getTitle().equals(title)){
                     throw new BookWithSameTitleAndAuthorException("Book with same title and author already exists");
